@@ -176,7 +176,7 @@
 						}
 					},
 					{
-						"name": "if Column Matches",
+						"name": "Check Column Count",
 						"type": "IfCondition",
 						"dependsOn": [
 							{
@@ -189,9 +189,32 @@
 						"userProperties": [],
 						"typeProperties": {
 							"expression": {
-								"value": "@equals(activity('Get File MetadData').output.columnCount,13)",
+								"value": "@equals(activity('Get File MetadData').output.columnCount,14)",
 								"type": "Expression"
 							},
+							"ifFalseActivities": [
+								{
+									"name": "Send Email",
+									"type": "WebActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"url": "https://nofile",
+										"method": "POST",
+										"headers": {},
+										"body": {
+											"error": "column count"
+										}
+									}
+								}
+							],
 							"ifTrueActivities": [
 								{
 									"name": "Copy population data_copy1",
