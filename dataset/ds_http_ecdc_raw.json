@@ -1,5 +1,5 @@
 {
-	"name": "ds_http_ecdc_deaths_raw",
+	"name": "ds_http_ecdc_raw",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ls_http_ecdc_eu",
