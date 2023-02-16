@@ -1,12 +1,11 @@
 {
 	"name": "ds_http_ecdc_raw",
 	"properties": {
-		"linkedServiceName": {
-			"referenceName": "ls_http_ecdc_eu",
-			"type": "LinkedServiceReference"
-		},
 		"parameters": {
 			"relative_url": {
+				"type": "string"
+			},
+			"base_url": {
 				"type": "string"
 			}
 		},
