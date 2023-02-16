@@ -13,6 +13,9 @@
 		},
 		"ls_adls_dl_properties_typeProperties_url": {
 			"value": "https://myrsdatalake.dfs.core.windows.net/"
+		},
+		"tr_ingest_population_properties_typeProperties_scope": {
+			"value": "/subscriptions/d523ceac-490e-4d3f-a8c6-2eb875ef0c2e/resourceGroups/RS_Group01/providers/Microsoft.Storage/storageAccounts/blobstoragers31"
 		}
 	}
 }
