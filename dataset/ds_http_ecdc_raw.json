@@ -1,6 +1,16 @@
 {
 	"name": "ds_http_ecdc_raw",
 	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_http_ecdc_eu",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"sourceBaseURL": {
+					"value": "@dataset().base_url",
+					"type": "Expression"
+				}
+			}
+		},
 		"parameters": {
 			"relative_url": {
 				"type": "string"
