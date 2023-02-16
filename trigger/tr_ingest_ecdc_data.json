@@ -16,7 +16,7 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2023-02-16T12:48:00",
+				"startTime": "2023-02-16T00:49:00",
 				"endTime": "2023-02-17T06:41:00",
 				"timeZone": "Central Standard Time (Mexico)"
 			}
