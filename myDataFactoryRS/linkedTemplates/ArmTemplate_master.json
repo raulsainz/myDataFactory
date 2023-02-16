@@ -27,6 +27,14 @@
 			"type": "string",
 			"defaultValue": "https://opendata.ecdc.europa.eu"
 		},
+		"tr_ingest_admissions_data_properties_pl_ingest_ecdc_data_parameters_sourceRelativeURL": {
+			"type": "string",
+			"defaultValue": "/covid19/hospitalicuadmissionrates/csv/data.csv"
+		},
+		"tr_ingest_admissions_data_properties_pl_ingest_ecdc_data_parameters_sinkFileName": {
+			"type": "string",
+			"defaultValue": "hospital_admissions3.csv"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -68,6 +76,12 @@
 					},
 					"tr_ingest_population_properties_typeProperties_scope": {
 						"value": "[parameters('tr_ingest_population_properties_typeProperties_scope')]"
+					},
+					"tr_ingest_admissions_data_properties_pl_ingest_ecdc_data_parameters_sourceRelativeURL": {
+						"value": "[parameters('tr_ingest_admissions_data_properties_pl_ingest_ecdc_data_parameters_sourceRelativeURL')]"
+					},
+					"tr_ingest_admissions_data_properties_pl_ingest_ecdc_data_parameters_sinkFileName": {
+						"value": "[parameters('tr_ingest_admissions_data_properties_pl_ingest_ecdc_data_parameters_sinkFileName')]"
 					}
 				}
 			},
