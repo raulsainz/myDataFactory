@@ -84,7 +84,7 @@
 				"          day_name as string,",
 				"          day_of_year as string,",
 				"          week_of_month as string,",
-				"          week_of_year as string,",
+				"          week_of_year as integer,",
 				"          month_name as string,",
 				"          year_month as string,",
 				"          year_week as string",
