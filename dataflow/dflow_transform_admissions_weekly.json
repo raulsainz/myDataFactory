@@ -17,6 +17,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "countryLookUp"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_dim_date_lookup",
+						"type": "DatasetReference"
+					},
+					"name": "dimDatesLookup"
 				}
 			],
 			"sinks": [
@@ -30,19 +37,19 @@
 			],
 			"transformations": [
 				{
-					"name": "DailyOnly"
+					"name": "WeeklyOnly"
 				},
 				{
 					"name": "RequiredFields"
-				},
-				{
-					"name": "pivotCounts"
 				},
 				{
 					"name": "lookupCountry"
 				},
 				{
 					"name": "selectForSink"
+				},
+				{
+					"name": "lookupDimDates"
 				}
 			],
 			"scriptLines": [
@@ -68,24 +75,34 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> countryLookUp",
-				"HospitalAdmissions filter(startsWith(indicator, 'Daily')) ~> DailyOnly",
-				"DailyOnly select(mapColumn(",
+				"source(output(",
+				"          date_key as string,",
+				"          date as date,",
+				"          year as string,",
+				"          month as string,",
+				"          day as string,",
+				"          day_name as string,",
+				"          day_of_year as string,",
+				"          week_of_month as string,",
+				"          week_of_year as string,",
+				"          month_name as string,",
+				"          year_month as string,",
+				"          year_week as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> dimDatesLookup",
+				"HospitalAdmissions filter(startsWith(indicator, 'Weekly')) ~> WeeklyOnly",
+				"WeeklyOnly select(mapColumn(",
 				"          country,",
 				"          indicator,",
-				"          reported_date = date,",
+				"          year_week,",
 				"          value,",
 				"          source",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> RequiredFields",
-				"RequiredFields pivot(groupBy(country,",
-				"          reported_date,",
-				"          source),",
-				"     pivotBy(indicator, ['Daily hospital occupancy', 'Daily ICU occupancy']),",
-				"     count = sum(value),",
-				"     columnNaming: '$V_$N',",
-				"     lateral: true) ~> pivotCounts",
-				"pivotCounts, countryLookUp lookup(pivotCounts@country == countryLookUp@country,",
+				"lookupDimDates, countryLookUp lookup(pivotCounts@country == countryLookUp@country,",
 				"     multiple: false,",
 				"     pickup: 'any',",
 				"     broadcast: 'auto')~> lookupCountry",
@@ -101,6 +118,11 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> selectForSink",
+				"RequiredFields, dimDatesLookup lookup(left(RequiredFields@year_week,4) == year",
+				"     && toInteger(right(RequiredFields@year_week,2)) == week_of_year,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> lookupDimDates",
 				"selectForSink sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
