@@ -164,11 +164,11 @@
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
-									"source1": {},
+									"srcAdmissions": {},
 									"srcCountry": {},
 									"srcDimDate": {},
 									"sinkWeekly": {},
-									"sink1": {}
+									"sinkDaily": {}
 								}
 							},
 							"staging": {},

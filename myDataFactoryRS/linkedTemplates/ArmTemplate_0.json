@@ -1024,7 +1024,7 @@
 								"referenceName": "ds_raw_hospital_admissions",
 								"type": "DatasetReference"
 							},
-							"name": "source1"
+							"name": "srcAdmissions"
 						},
 						{
 							"dataset": {
@@ -1054,7 +1054,7 @@
 								"referenceName": "ds_processed_admissions_daily",
 								"type": "DatasetReference"
 							},
-							"name": "sink1"
+							"name": "sinkDaily"
 						}
 					],
 					"transformations": [
@@ -1107,7 +1107,7 @@
 						"     ),",
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> source1",
+						"     ignoreNoFilesFound: false) ~> srcAdmissions",
 						"source(output(",
 						"          country as string,",
 						"          country_code_2_digit as string,",
@@ -1139,7 +1139,7 @@
 						"     multiple: false,",
 						"     pickup: 'any',",
 						"     broadcast: 'auto')~> countryLookup",
-						"source1 select(mapColumn(",
+						"srcAdmissions select(mapColumn(",
 						"          country,",
 						"          indicator,",
 						"          reported_date = date,",
@@ -1196,9 +1196,11 @@
 						"     columnNaming: '$V$N',",
 						"     lateral: true) ~> pivotDaily",
 						"pivotWeekly sort(desc(reported_year_week, true),",
-						"     asc(country, true)) ~> sortWeekly",
+						"     asc(country, true),",
+						"     partitionBy('hash', 1)) ~> sortWeekly",
 						"pivotDaily sort(desc(reported_date, true),",
-						"     asc(country, true)) ~> sortDaily",
+						"     asc(country, true),",
+						"     partitionBy('hash', 1)) ~> sortDaily",
 						"sortWeekly select(mapColumn(",
 						"          country,",
 						"          country_code_2_digit,",
@@ -1237,11 +1239,14 @@
 						"          icu_occupancy_count as string,",
 						"          source as string",
 						"     ),",
+						"     partitionFileNames:['hospital_admissions_weekly.csv'],",
+						"     truncate: true,",
 						"     umask: 0022,",
 						"     preCommands: [],",
 						"     postCommands: [],",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> sinkWeekly",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> sinkWeekly",
 						"selectDaily sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     input(",
@@ -1254,11 +1259,14 @@
 						"          reported_date as string,",
 						"          source as string",
 						"     ),",
+						"     partitionFileNames:['hospital_admissions_daily.csv'],",
+						"     truncate: true,",
 						"     umask: 0022,",
 						"     preCommands: [],",
 						"     postCommands: [],",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> sink1"
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> sinkDaily"
 					]
 				}
 			},
