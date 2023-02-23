@@ -50,6 +50,9 @@
 				},
 				{
 					"name": "lookupDimDates"
+				},
+				{
+					"name": "pivotCounts"
 				}
 			],
 			"scriptLines": [
@@ -102,7 +105,7 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> RequiredFields",
-				"lookupDimDates, countryLookUp lookup(pivotCounts@country == countryLookUp@country,",
+				"pivotCounts, countryLookUp lookup(pivotCounts@country == countryLookUp@country,",
 				"     multiple: false,",
 				"     pickup: 'any',",
 				"     broadcast: 'auto')~> lookupCountry",
@@ -123,6 +126,13 @@
 				"     multiple: false,",
 				"     pickup: 'any',",
 				"     broadcast: 'auto')~> lookupDimDates",
+				"lookupDimDates pivot(groupBy(country,",
+				"          source,",
+				"          RequiredFields@year_week),",
+				"     pivotBy(indicator, ['Weekly new hospital admissions per 100k', 'Weekly new ICU admissions per 100k']),",
+				"     count = sum(value),",
+				"     columnNaming: '$N$V',",
+				"     lateral: true) ~> pivotCounts",
 				"selectForSink sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
