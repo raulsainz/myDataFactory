@@ -16,14 +16,14 @@
 						"referenceName": "ds_country_lookup",
 						"type": "DatasetReference"
 					},
-					"name": "lookupCountry"
+					"name": "srcCountry"
 				},
 				{
 					"dataset": {
 						"referenceName": "ds_dim_date_lookup",
 						"type": "DatasetReference"
 					},
-					"name": "lookupDimDate"
+					"name": "srcDimDate"
 				}
 			],
 			"sinks": [],
@@ -41,13 +41,13 @@
 					"name": "SplitDailyAndWeekly"
 				},
 				{
-					"name": "DimDatelookup"
-				},
-				{
-					"name": "derivedYearWeek"
-				},
-				{
 					"name": "aggDimDate"
+				},
+				{
+					"name": "JoinWithDate"
+				},
+				{
+					"name": "select1"
 				}
 			],
 			"scriptLines": [
@@ -72,7 +72,7 @@
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> lookupCountry",
+				"     ignoreNoFilesFound: false) ~> srcCountry",
 				"source(output(",
 				"          date_key as string,",
 				"          date as string,",
@@ -89,8 +89,8 @@
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> lookupDimDate",
-				"selectFields, lookupCountry lookup(selectFields@country == lookupCountry@country,",
+				"     ignoreNoFilesFound: false) ~> srcDimDate",
+				"selectFields, srcCountry lookup(selectFields@country == srcCountry@country,",
 				"     multiple: false,",
 				"     pickup: 'any',",
 				"     broadcast: 'auto')~> countryLookup",
@@ -119,14 +119,29 @@
 				"     skipDuplicateMapOutputs: true) ~> selectFields2",
 				"selectFields2 split(startsWith( indicator,'Week'),",
 				"     disjoint: false) ~> SplitDailyAndWeekly@(Weekly, Daily)",
-				"SplitDailyAndWeekly@Weekly, lookupDimDate lookup(ERROR_FUNCTION('') == ERROR_FUNCTION(''),",
-				"     multiple: false,",
-				"     pickup: 'any',",
-				"     broadcast: 'auto')~> DimDatelookup",
-				"lookupDimDate derive(my_year_week = year + '-W' + lpad(week_of_year, 2, '0')) ~> derivedYearWeek",
-				"derivedYearWeek aggregate(groupBy(my_year_week),",
+				"srcDimDate aggregate(groupBy(my_year_week = year + '-W' + lpad(week_of_year, 2, '0')),",
 				"     week_start_date = min(date),",
-				"          week_end_date = max(date)) ~> aggDimDate"
+				"          week_end_date = max(date)) ~> aggDimDate",
+				"SplitDailyAndWeekly@Weekly, aggDimDate join(reported_year_week == my_year_week,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> JoinWithDate",
+				"JoinWithDate select(mapColumn(",
+				"          country,",
+				"          country_code_2_digit,",
+				"          country_code_3_digit,",
+				"          population,",
+				"          indicator,",
+				"          reported_date,",
+				"          reported_year_week,",
+				"          value,",
+				"          source,",
+				"          week_start_date,",
+				"          week_end_date",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1"
 			]
 		}
 	}
