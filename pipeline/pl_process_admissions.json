@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "FlowDaily",
+				"name": "FlowAdmissions",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "dflow_transform_hospital_daily",
+						"referenceName": "dflow_transform_admissions_all",
 						"type": "DataFlowReference"
 					},
 					"compute": {
