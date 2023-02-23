@@ -26,7 +26,15 @@
 					"name": "dimDatesLookup"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_processed_admissions_weekly",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
 					"name": "WeeklyOnly"
@@ -109,7 +117,24 @@
 				"     pivotBy(indicator, ['Weekly new hospital admissions per 100k', 'Weekly new ICU admissions per 100k']),",
 				"     count = sum(value),",
 				"     columnNaming: '$N$V',",
-				"     lateral: true) ~> pivotCounts"
+				"     lateral: true) ~> pivotCounts",
+				"lookupCountry sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          country as string,",
+				"          country_code_2_digit as string,",
+				"          country_code_3_digit as string,",
+				"          population as string,",
+				"          reported_date as string,",
+				"          hospital_occupancy_count as string,",
+				"          icu_occupancy_count as string,",
+				"          source as string",
+				"     ),",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]
 		}
 	}
