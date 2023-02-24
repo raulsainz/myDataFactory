@@ -23,7 +23,7 @@
 				{
 					"type": "TumblingWindowTriggerDependencyReference",
 					"referenceTrigger": {
-						"referenceName": "tr_ingest_ecdc_data2",
+						"referenceName": "tr_ingest_ecdc_data",
 						"type": "TriggerReference"
 					}
 				}
