@@ -11,6 +11,9 @@
 		"ls_blob_sa_connectionString": {
 			"value": ""
 		},
+		"ls_sql_dhw_connectionString": {
+			"value": ""
+		},
 		"ls_adls_dl_properties_typeProperties_url": {
 			"value": "https://myrsdatalake.dfs.core.windows.net/"
 		},

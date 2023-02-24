@@ -15,6 +15,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_blob_sa'"
 		},
+		"ls_sql_dhw_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ls_sql_dhw'"
+		},
 		"ls_adls_dl_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://myrsdatalake.dfs.core.windows.net/"
@@ -59,6 +63,9 @@
 					},
 					"ls_blob_sa_connectionString": {
 						"value": "[parameters('ls_blob_sa_connectionString')]"
+					},
+					"ls_sql_dhw_connectionString": {
+						"value": "[parameters('ls_sql_dhw_connectionString')]"
 					},
 					"ls_adls_dl_properties_typeProperties_url": {
 						"value": "[parameters('ls_adls_dl_properties_typeProperties_url')]"
